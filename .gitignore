@@ -5,5 +5,8 @@
 /libs
 /native
 /release
-/src
 /wrapper
+/src/main/assets/defaults
+src/main/assets/filelist.txt
+src/main/assets/index.txt
+src/main/assets/cacert.pem

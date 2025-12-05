@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="preparing_media">準備媒體&#8230;</string>
+	<string name="not_granted">沒有授予所需權限，EDOPro-KCG將無法運行</string>
+	<string name="default_path">選擇了外部存儲文件夾，由於某些android限制，遊戲路徑將設置為: %s</string>
+	<string name="default_dir">%s 作為遊戲目錄</string>
+	<string name="default_dir_changeable">%s 作為遊戲目錄。你想改變它嗎?</string>
+	<string name="separate_data_dir">目前使用 %s 作為遊戲目錄。卸載時，此資料夾將自動刪除。是否選擇其他資料夾？?</string>
+	<string name="reconfirm_data_dir">遊戲目錄的資料夾無法存取。請重新授予存取權限</string>
+	<string name="open_work_dir">管理文件</string>
+	<string name="keep_game_folder">保持作為目錄</string>
+	<string name="change_game_folder">改變目錄</string>
+	<string name="assets_prompt">複製資源?</string>
+	<string name="copying_update">複製更新</string>
+	<string name="no_matching">找不到匹配的存儲</string>
+	<string name="ask_extra_assets">複製動畫/語音/素材等資源?</string>
+</resources>
