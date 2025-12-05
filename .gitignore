@@ -1,0 +1,9 @@
+/.gradle
+/.idea
+/build
+/gradle
+/libs
+/native
+/release
+/src
+/wrapper
