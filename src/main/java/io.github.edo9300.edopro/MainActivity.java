@@ -35,8 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import libwindbot.windbot.WindBot;
-
 public class MainActivity extends Activity {
 	private final static boolean wantsScopedStorage = Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
 
@@ -53,12 +51,12 @@ public class MainActivity extends Activity {
 	private void showFileManager() {
 		final var EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents";
 		final var DOCUMENT_ID_PRIMARY = "primary";
-		final var DOCUMENT_ID_PRIMARY_ANDROID_DATA = "primary:Android/data/" + getApplicationContext().getPackageName() + "/files/EDOPro";
+		final var DOCUMENT_ID_PRIMARY_ANDROID_DATA = "primary:Android/data/" + getApplicationContext().getPackageName() + "/files/EDOPro-KCG";
 		final var TREE_URI_PRIMARY_ANDROID = DocumentsContract.buildTreeDocumentUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY, DOCUMENT_ID_PRIMARY);
 		final var DOCUMENT_URI_ANDROID_DATA = DocumentsContract.buildDocumentUriUsingTree(TREE_URI_PRIMARY_ANDROID, DOCUMENT_ID_PRIMARY_ANDROID_DATA);
 
 		final var EDOPRO_PROVIDER_AUTHORITY = getApplicationContext().getPackageName() + ".document_provider";
-		final var filePath = getExternalFilesDir("EDOPro").getPath();
+		final var filePath = getExternalFilesDir("EDOPro-KCG").getPath();
 		final var EDOPRO_TREE_URI_PRIMARY_ANDROID = DocumentsContract.buildTreeDocumentUri(EDOPRO_PROVIDER_AUTHORITY, filePath);
 		final var EDOPRO_DOCUMENT_URI_ANDROID_DATA = DocumentsContract.buildDocumentUriUsingTree(EDOPRO_TREE_URI_PRIMARY_ANDROID, filePath);
 		final var intents = Arrays.asList(new Intent()
@@ -95,6 +93,8 @@ public class MainActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (!wantsScopedStorage) next();
+
 		var intent = getIntent();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			var extras = this.getIntent().getExtras();
@@ -206,7 +206,7 @@ public class MainActivity extends Activity {
 				} catch (Exception e) {
 					Log.e("EDOPro-KCG", "error when creating assets_copied file: " + e.getMessage());
 				}
-				finish();
+				next();
 				break;
 			}
 			case CHOOSE_WORKING_DIR: {
@@ -270,38 +270,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void next() {
-		var use_windbot = true;
-		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-			use_windbot = false;
-		} else {
-			try {
-				/*
-				 * windbot loading might fail, for whatever reason,
-				 * disable it if that's the case
-				 */
-				WindBot.initAndroid(working_directory + "/WindBot");
-			} catch (Exception e) {
-				use_windbot = false;
-			}
-		}
-		/*
-			pass the working directory via parameters, rather than making
-			the app read the working_dir file
-		*/
-		if (changelog)
-			parameter.add(0, "-l");
-		parameter.add(0, working_directory + "/");
-		parameter.add(0, "-C");
-		var array = parameter.toArray();
-		var strArr = new String[array.length];
-		for (int i = 0; i < array.length; i++) {
-			strArr[i] = array[i].toString();
-		}
-		var intent = new Intent(this, EpNativeActivity.class);
-		intent.putExtra("ARGUMENTS", strArr);
-		intent.putExtra("USE_WINDBOT", use_windbot);
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		startActivity(intent);
+		finish();
 	}
 
 	public void getWorkingDirectory() {
@@ -420,21 +389,6 @@ public class MainActivity extends Activity {
 		}
 		new AlertDialog.Builder(this)
 				.setMessage(R.string.assets_prompt)
-				.setNegativeButton("No", (dialog, id) -> {
-					try {
-						var file1 = new File(getFilesDir(), "assets_copied");
-						if (!file1.createNewFile()) {
-							Log.e("EDOPro", "error when creating assets_copied file");
-						} else {
-							var wr = (new FileWriter(file1));
-							wr.write("" + BuildConfig.VERSION_CODE);
-							wr.flush();
-						}
-					} catch (Exception e) {
-						Log.e("EDOPro", "error when creating assets_copied file: " + e.getMessage());
-					}
-					next();
-				})
 				.setPositiveButton("Yes", (dialog, id) -> copyAssets(working_dir, false))
 				.setCancelable(false)
 				.show();
